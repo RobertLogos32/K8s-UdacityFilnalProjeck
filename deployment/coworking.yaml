@@ -7,10 +7,10 @@ spec:
   selector:
     service: coworking
   ports:
-  - name: "5153"
-    protocol: TCP
-    port: 5153
-    targetPort: 5153
+    - name: "5153"
+      protocol: TCP
+      port: 5153
+      targetPort: 5153
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -29,35 +29,35 @@ spec:
         service: coworking
     spec:
       containers:
-      - name: coworking
-        image: 291940541009.dkr.ecr.us-east-1.amazonaws.com/coworking-analytics:1.0.14
-        imagePullPolicy: IfNotPresent
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "250m"
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /health_check
-            port: 5153
-          initialDelaySeconds: 5
-          timeoutSeconds: 2
-        readinessProbe:
-          httpGet:
-            path: "/readiness_check"
-            port: 5153
-          initialDelaySeconds: 5
-          timeoutSeconds: 5
-        envFrom:
-        - configMapRef:
-            name: coworking-config
-        env:
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: coworking-secret
-              key: DB_PASSWORD
+        - name: coworking
+          image: 291940541009.dkr.ecr.us-east-1.amazonaws.com/coworking-analytics:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health_check
+              port: 5153
+            initialDelaySeconds: 5
+            timeoutSeconds: 2
+          readinessProbe:
+            httpGet:
+              path: "/readiness_check"
+              port: 5153
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+          envFrom:
+            - configMapRef:
+                name: coworking-config
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: coworking-secret
+                  key: DB_PASSWORD
       restartPolicy: Always
